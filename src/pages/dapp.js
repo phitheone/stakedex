@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SwapWidget } from "@uniswap/widgets";
 import "@uniswap/widgets/fonts.css";
 import {
@@ -22,8 +22,39 @@ import { BiData } from "react-icons/bi";
 import { BiDollarCircle } from "react-icons/bi";
 import { BsArrowUpRight } from "react-icons/bs";
 import { AiOutlineSearch } from "react-icons/ai";
+import { currentTime } from "../components/presale/index"
+import  CrowdfundingForm  from "../components/presale/CrowdfundingForm"
+import  CrowdfundingInfo  from "../components/presale/CrowdfundingInfo"
+
 
 const Dapp = () => {
+
+  const [currentTime, setCurrentTime] = useState('');
+
+  function getCurrentUTCTime() {
+    const date = new Date();
+    const options = {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+    };
+    const formattedTime = date.toLocaleString('en-US', options);
+    return formattedTime;
+  }
+
+
+
+  useEffect(() => {
+    const currentTime = getCurrentUTCTime();
+    setCurrentTime(currentTime);
+  }, []);
+
   //const [isMetamaskConnected, setIsMetamaskConnected] = useState(false);
   const connectMetamask = async () => {
     if (window.ethereum) {
@@ -38,8 +69,9 @@ const Dapp = () => {
     }
   };
 
+
   // Default token list from Uniswap
-  const UNISWAP_TOKEN_LIST = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
+  // const UNISWAP_TOKEN_LIST = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
 
   // Use the native token of the connected chain as the default input token
   const NATIVE = "NATIVE"; // Special address for native token
@@ -77,15 +109,10 @@ const Dapp = () => {
               <p>Burn</p>
               <AiOutlineFire />
             </div>
-            <a
-            //</div>href=""
-            // target="_blank"
-            >
-              <div className="DNavBtn">
-                <p>Voting</p>
-                <BsGraphUpArrow />
-              </div>
-            </a>
+            <div className="DNavBtn" onClick={() => setSelection("presale")}>
+              <p>presale</p>
+              <BsGraphUpArrow />
+            </div>
           </div>
         </div>
         <div className="DNRight">
@@ -123,10 +150,10 @@ const Dapp = () => {
               </div>
               <div className="Uniswap">
                 <SwapWidget
-                  tokenList={UNISWAP_TOKEN_LIST}
+                  // tokenList={UNISWAP_TOKEN_LIST}
                   defaultInputTokenAddress={NATIVE}
                   defaultInputAmount={2}
-                  //defaultOutputTokenAddress={}
+                //defaultOutputTokenAddress={}
                 />
               </div>
             </motion.div>
@@ -314,6 +341,48 @@ const Dapp = () => {
               </div>
               <div className="LIBottomBox SBoxMod">
                 <button className="connect-button CBalt3">Burn</button>
+              </div>
+            </motion.div>
+          )}
+          {selection === "presale" && (
+            <motion.div
+              key="burkey"
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 300 }}
+              transition={{ type: "spring", mass: 1, duration: 0.5 }}
+              className="DContainerST"
+            >
+              <div className='PresaleMonitor'>
+                {/* Aquí se incluye la pantalla de conexión a Metamask */}
+                <div className='PresaleBox'>
+
+                  <div className='PresaleTitle'>
+                    <h3>Presale</h3>
+                    <p>Purchase tokens at launch price</p>
+                  </div>
+
+                  
+                  {/* <div className='PresaleCurrentStatus'>
+
+                    <div className='Current'>
+                      <h3>Current Time</h3>
+                      <p>{currentTime}</p>
+                    </div>
+                    <div className='Status'>
+                      <h3>Presale Status</h3>
+                      <p>Ended</p>
+                    </div>
+                  </div> */}
+                  {/* Aquí se incluyen los componentes del crowdfunding */}
+                  <div className='CrowdfundingContainer'>
+                    <CrowdfundingForm />
+                    <CrowdfundingInfo />
+                  </div>
+                  <div className='ButtonDashboard'>
+                    <span data-tooltip="Coming soon" data-flow="top"><button>Claim</button></span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
